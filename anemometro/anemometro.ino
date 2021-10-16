@@ -10,8 +10,6 @@ int velocidad;
 int velocidad_maxima = 30; //cambiar rango
 int velocidad_minima = 20; //cambiar rango
 
-int counter = 0; //valor cambiante encoder
-
 //podremos determinar si realmente se movió el encoder
 int current_state_clk;
 int previous_state_clk;
@@ -56,7 +54,7 @@ void ai1(){
 
 
 void loop() {
-
+  Serial.println(counter);
   //convertir counter to rpm
   
   /*current_state_clk = digitalRead(input_clk);
