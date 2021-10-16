@@ -1,39 +1,34 @@
-int counter = 0;  //This variable will increase or decrease depending on the rotation of encoder
+//int counter = 0;  //This variable will increase or decrease depending on the rotation of encoder
 
 
 //canales-inputs encoder
-const int input_clk = 2;
-const int input_dt = 3;
+const byte encoderPinA = 2;
+const byte encoderPinB = 3;
 
+volatile long pulse;
 
-int velocidad;
-int velocidad_maxima = 30; //cambiar rango
-int velocidad_minima = 20; //cambiar rango
+volatile bool pinB, pinA, dir;
 
-//podremos determinar si realmente se movió el encoder
-int current_state_clk;
-int previous_state_clk;
 
 
 void setup() {
-
-  //encoder pins como input
-  pinMode(input_clk, INPUT);
-  pinMode(input_dt, INPUT);
-  
   Serial.begin(9600);
-
-
-  //leer y asignar estado inicial a ...
-  previous_state_clk = digitalRead(input_clk);
-
+  pinMode(encoderPinA, INPUT);
+  pinMode(encoderPinB, INPUT);
+  attachInterrupt(0, readEncoder, CHANGE);
+  
   //pulso A rising de encoder
-  attachInterrupt(digitalPinToInterrupt(2), ai0, RISING);
-
+  //attachInterrupt(digitalPinToInterrupt(encoderPinA), ai0, RISING);
   //pulso B rising de encoder
-  attachInterrupt(digitalPinToInterrupt(3), ai1, RISING);
+  //attachInterrupt(digitalPinToInterrupt(encoderPinB), ai1, RISING);
 }
 
+void readEncoder(){
+  pinA = bitRead(PIND,encoderPinA);
+  pinB = bitRead(PIND,encoderPinB);
+  pulse += (pinA == pinB) ? +1 : -1;
+}
+/*
 void ai0(){
   //ai0 se activa si digitalpin #2 va de LOW a HIGH
   //chequamos pin 5 para ver dirección
@@ -51,10 +46,10 @@ void ai1(){
       counter++;
     }
 }
-
+*/
 
 void loop() {
-  Serial.println(counter);
+  Serial.println(pulse);
   //convertir counter to rpm
   
   /*current_state_clk = digitalRead(input_clk);
