@@ -2,17 +2,19 @@ volatile long pulse1 = 0;
 volatile long pulse2 = 0;
 volatile byte speedCount = 0;
 int rpm; int mph; int kph;
-const radious = 0.000932057; // radio 15cm en millas
+const long radious = 0.000932057; // radio 15cm en millas
 
 //canales-inputs encoder
 const byte encoderPinA = 2;
 const byte encoderPinB = 3;
 
+long pulse = 0;
+volatile long pulseTime = 0; 
 volatile bool pinB, pinA;
 
 void pulse_detect(){ // agregar la logica para otra sentido
   pulse2 = pulse1;
-  pulse1 = milis();
+  pulse1 = millis();
   speedCount++;
   if(speedCount == 2){
     detachInterrupt(0);
@@ -45,7 +47,7 @@ void loop() {
     attachInterrupt(0, pulse_detect, FALLING); //re-attach the interrput
   }
 
-  if(milis() - pulse1 >= 2000){ //if a pulse is not registered for 2 seconds
+  if(millis() - pulse1 >= 2000){ //if a pulse is not registered for 2 seconds
     mph = 0;
     kph = 0;
     speedCount = 0;  

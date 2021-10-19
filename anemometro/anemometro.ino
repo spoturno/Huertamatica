@@ -1,39 +1,49 @@
+const int ENC_COUNT_REV = 600;
+const int ENC_IN = 2;
 
-//canales-inputs encoder
-const byte encoderPinA = 2;
-const byte encoderPinB = 3;
 
 volatile long pulse;
+int interval = 1000; //intervalo de 1s para medidas
 
-volatile bool pinB, pinA;
+//counters for milliseconds during interval
+long previousMillis = 0;
+long currentMillis = 0;
 
-int rpm;
-const int ppr = 1200, upDatesPerSec = 2;
-const float konstant = 60.0 * upDatesPerSec / (ppr);
-
+int rpm; // rev per min
 
 void setup() {
   Serial.begin(9600);
-  pinMode(encoderPinA, INPUT);
-  pinMode(encoderPinB, INPUT);
-  attachInterrupt(0, readEncoder, CHANGE);
+  pinMode(ENC_IN, INPUT);
+  //pinMode(encoderPinB, INPUT);
+  attachInterrupt(digitalPinToInterrupt(ENC_IN), updateEncoder, RISING);
+  previousMillis = millis();
   
 }
 
-void readEncoder(){
-  pinA = bitRead(PIND,encoderPinA);
-  pinB = bitRead(PIND,encoderPinB);
-  pulse += (pinA == pinB) ? +1 : -1;
+void updateEncoder(){
+  pulse++;
 }
 
 
 void loop() {
-  //Serial.println(pulse);
-
   
-  //convertir counter to rpm
-  rpm = pulse*konstant;
-  Serial.println(rpm);
-  //pulse = 0;
+  //update rpm value every second
+  currentMillis = millis();
+  if(currentMillis - previousMillis > interval){ // cuantos pulsos ocurren en intervalo de 1s
+    previousMillis = currentMillis;
+    //multiplicando por 60 obtenemos la cantidad en 1 minuto
+    //dividimos por el total de pulsos x rev del encoder 
+    rpm = pulse * 60 / ENC_COUNT_REV; 
+    
+    Serial.print("PULSES:");
+    Serial.print(pulse);
+    Serial.print('\n');
+    Serial.print("SPEED:");
+    Serial.print(rpm);
+    Serial.print("RPM");
+    Serial.print('\t');
+    pulse = 0;
+  
+  }
   
 }
