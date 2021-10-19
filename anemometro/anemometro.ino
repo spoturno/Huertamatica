@@ -7,7 +7,9 @@ volatile long pulse;
 
 volatile bool pinB, pinA;
 
-int rpm = 0;
+int rpm;
+const int ppr = 1200, upDatesPerSec = 2;
+const float konstant = 60.0 * upDatesPerSec / (ppr);
 
 
 void setup() {
@@ -26,9 +28,12 @@ void readEncoder(){
 
 
 void loop() {
-  Serial.println(pulse);
+  //Serial.println(pulse);
 
   
   //convertir counter to rpm
+  rpm = pulse*konstant;
+  Serial.println(rpm);
+  //pulse = 0;
   
 }
