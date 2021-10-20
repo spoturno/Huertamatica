@@ -1,6 +1,6 @@
 const int ENC_COUNT_REV = 600;
 const int ENC_IN = 2;
-const int radious = 15; // radio de anemometro en metros
+const int radious = 15; // radio de anemometro en centimetros
 
 volatile long pulse;
 int interval = 1000; //intervalo de 1s para medidas
@@ -36,7 +36,9 @@ void loop() {
     //multiplicando por 60 obtenemos la cantidad en 1 minuto
     //dividimos por el total de pulsos x rev del encoder 
     rpm = pulse * 60 / ENC_COUNT_REV; 
-    kph = (0.1885 * rpm * 2 * radious) / 100;
+    // v = 2 * pi * frec * radio
+    // convertimos a kph multiplicando por 3.6 (3600 / 1000)
+    kph = (0.1885 * rpm * 2 * radious) / 100; 
 
     if(rpm > 0){
       Serial.print("PULSES:");
