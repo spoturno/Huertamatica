@@ -44,6 +44,7 @@ void loop() {
       Serial.print("PULSES:");
       Serial.print(pulse);
       Serial.print('\n');
+      
       Serial.print("SPEED:");
       Serial.print(rpm);
       Serial.print("RPM");
