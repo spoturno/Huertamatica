@@ -30,12 +30,12 @@ void setup(){
     Serial.begin(9600);
     pinMode(ENC_IN, INPUT_PULLUP); // solo 1 channel del encoder
     attachInterrupt(digitalPinToInterrupt(ENC_IN), updateEncoder, RISING);   
-     pinMode(en1,OUTPUT);
+    pinMode(en1,OUTPUT);
     pinMode(in1,OUTPUT);
     pinMode(in2,OUTPUT);
     pinMode(in3,OUTPUT);
     pinMode(in4,OUTPUT);
-    pinMode(en2, OUTPUT);  
+    pinMode(en2,OUTPUT);  
 }
 
 void updateEncoder(){
@@ -54,12 +54,11 @@ void loop(){
 
         // la otra forma es ir calculando el promedio iterativamente.
         
-        if(currentMillis % 1000 == 0){
+        if(currentMillis == 1000){ // unicamente al inicio
             velocidadInicial = kph;
             Serial.print("velocidadInicial:");
             Serial.println(velocidadInicial);
-        }
-        if(currentMillis % 10000 == 0){
+        }else if(currentMillis == 11000){
             velocidadFinal = kph;
             Serial.print("velocidadFinal:");
             Serial.println(velocidadFinal);
@@ -72,7 +71,7 @@ void loop(){
         attachInterrupt(digitalPinToInterrupt(ENC_IN), updateEncoder, RISING);
     }
     
-    if(currentMillis - previousMillisVelocity >= 10000){
+    if(currentMillis - previousMillisVelocity >= 11000){
         previousMillisVelocity = currentMillis;
         velocidadMedia = (velocidadInicial + velocidadFinal) / 2;
         if(velocidadMedia >= 15 && estadoCupula){
@@ -87,6 +86,9 @@ void loop(){
             abrir_move();
             estadoCupula = true;
         }
+        //reseteamos el tiempo para conveniencia de logica
+        currentMillis = 0;
+        previousMillis = 0;
     }
     
 }
